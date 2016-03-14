@@ -1,0 +1,53 @@
+﻿@model IdentityManagerWebApp.ViewModels.AccountManager.AssignRolesViewModel
+
+@{
+    var gridLabel = "control-label col-sm-4 col-md-4";
+    var gridInput = "col-sm-8 col-md-8";
+}
+
+
+<h2>@ViewData["Title"]</h2>
+<p class="text-success">@ViewBag.StatusMessage</p>
+@using (Html.BeginForm("AssignRoles", "AccountManager", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Roles Usuario</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(a => a.Id)
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName, new { @class = gridLabel })
+        <div class="@gridInput">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", disabled = "disabled" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = gridLabel })
+        <div class="@gridInput">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", disabled = "disabled" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RolesList, new { @class = gridLabel })
+        <div class="@gridInput">
+            @(Html.Kendo().MultiSelect()
+          .Name("Roles")
+          .Placeholder("Seleccione Roles")
+          .BindTo(Model.RolesList)
+          .Value(Model.Roles.ToArray()))
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Guardar" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+

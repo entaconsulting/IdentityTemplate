@@ -1,0 +1,38 @@
+﻿@model IdentityManagerWebApp.ViewModels.AccountManager.CreateSuccessViewModel
+
+@{
+    var gridLabel = "control-label col-sm-4 col-md-4";
+    var gridInput = "col-sm-8 col-md-8";
+    ViewData["Title"] = "Creación Exitosa";
+
+}
+
+
+<div class="page-header">
+    <h3>@ViewBag.Title</h3>
+</div>
+<div class="container">
+    <div class="row">
+        @using (Html.BeginForm("", "", FormMethod.Get, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.CreatedUserName, new { @class = gridLabel })
+                <div class="@gridInput">
+                    @Html.TextBoxFor(m => m.CreatedUserName, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, new { @class = gridLabel })
+                <div class="@gridInput">
+                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px">
+                <div class="col-sm-12">
+                    @Html.ActionLink("Crear Otra Cuenta", "Create", "AccountManager", new { @class = "k-button" })
+                    @Html.ActionLink("Volver", "Index", "AccountManager", new { @class = "k-button" })
+                </div>
+            </div>
+        }
+    </div>
+</div>

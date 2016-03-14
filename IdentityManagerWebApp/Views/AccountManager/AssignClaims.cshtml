@@ -1,0 +1,74 @@
+﻿@using IdentityManagerWebApp.ViewModels.AccountManager
+@model AssignClaimsViewModel
+@{
+    var gridLabel = "control-label col-sm-4 col-md-4";
+    var gridInput = "col-sm-8 col-md-8";
+    ViewData["Title"] = "Claims de usuario";
+}
+
+<div class="page-header">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="row">
+    @using (Html.BeginForm("", "", FormMethod.Get, new { @class = "form-horizontal", role = "form" }))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.UserName, new { @class = gridLabel })
+            <div class="@gridInput">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = gridLabel })
+            <div class="@gridInput">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+    }
+</div>
+<div class="row">
+    @(Html.Kendo().Grid<ClaimListViewModel>()
+        .Name("Grid")
+        .Columns(columns =>
+        {
+            columns.Bound(p => p.ClaimType).Width(200);
+            columns.Bound(p => p.ClaimValues);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Save().SaveText("Guardar").CancelText("Cancelar Cambios");
+        })
+        .Editable(editable => editable.Mode(GridEditMode.InCell))
+        .Pageable()
+        .Navigatable()
+        .Sortable()
+        .Scrollable()
+        .DataSource(dataSource => dataSource
+        .Ajax().Events(e => e.RequestEnd("onRequestEnd"))
+        .Batch(true)
+        .PageSize(20)
+        .ServerOperation(false)
+        .Model(model =>
+        {
+            model.Id(p => p.ClaimType);
+            model.Field(p => p.ClaimType).Editable(false);
+        })
+        .Update("Claims_Update", "AccountManager", new { id = Model.Id })
+        .Read("Claims_Read", "AccountManager", new { id = Model.Id }))
+    )
+</div>
+<script>
+function onRequestEnd(e) {
+
+    if (e.type == "update" && !e.response.Errors) {
+        toastr.success('Actualización Exitosa');
+    }
+
+    //if (e.type == "create" && !e.response.Errors) {
+    //    alert("Create record is successfull");
+    //}
+}
+</script>
+
+

@@ -1,0 +1,37 @@
+﻿@using IdentityManagerWebApp.ViewModels.AccountManager
+@{
+    ViewData["Title"] = "Cuentas de usuarios";
+}
+
+<div class="page-header">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            @(Html.Kendo().Grid<UserListViewModel>()
+                .Name("UsersGrid")
+                .DataSource(ds =>
+                    ds.Ajax()
+                    .Read(read => read.Action("List", "AccountManager"))
+                    .PageSize(20))
+                .Pageable()
+                .Columns(columns =>
+                {
+                    columns.Bound(d => d.UserName);
+                    columns.Bound(d => d.Id).ClientTemplate("<a href='" + Url.Action("Details", "AccountManager") + "/#= Id #'>Ver</a>").HeaderTemplate("<span></span>");
+                    columns.Bound(d => d.Id).ClientTemplate("<a href='" + Url.Action("Edit", "AccountManager") + "/#= Id #'>Editar</a>").HeaderTemplate("<span></span>");
+                    columns.Bound(d => d.Id).ClientTemplate("<a href='" + Url.Action("AssignRoles", "AccountManager") + "/#= Id #'>Roles</a>").HeaderTemplate("<span></span>");
+                    columns.Bound(d => d.Id).ClientTemplate("<a href='" + Url.Action("AssignClaims", "AccountManager") + "/#= Id #'>Claims</a>").HeaderTemplate("<span></span>");
+                })
+            )
+        </div>
+
+        <div class="row" style="margin-top: 10px">
+            <div class="col-sm-12">
+                @Html.ActionLink("Nueva Cuenta", "Create", "AccountManager", new { @class = "k-button" })
+            </div>
+        </div>
+    </div>
+
