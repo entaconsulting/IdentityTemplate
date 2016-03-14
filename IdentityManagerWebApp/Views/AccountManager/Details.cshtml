@@ -1,0 +1,59 @@
+﻿
+@using IdentityManagerWebApp.ViewModels.AccountManager
+@model IdentityManagerWebApp.ViewModels.AccountManager.DetailsViewModel
+
+@{
+    var gridLabel = "control-label col-sm-4 col-md-4";
+    var gridInput = "col-sm-8 col-md-8";
+}
+<h2>@ViewData["Title"]</h2>
+<p class="text-success">@ViewBag.StatusMessage</p>
+@using (Html.BeginForm("", "", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <h4>Detalles Usuario</h4>
+    <hr />
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName, new { @class = gridLabel })
+        <div class="@gridInput">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", disabled = "disabled" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = gridLabel })
+        <div class="@gridInput">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", disabled = "disabled" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Roles, new { @class = gridLabel })
+        <div class="@gridInput">
+            @(Html.Kendo().MultiSelect()
+          .Name("Roles")
+          .Placeholder("Seleccione Roles")
+          .BindTo(Model.Roles)
+          .Value(Model.Roles.ToArray()).Enable(false))
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ClaimsList, new { @class = gridLabel })
+        <div class="@gridInput">
+            @(Html.Kendo().Grid
+              (Model.ClaimsList)
+              .Name("Grid")
+              .Columns(columns =>
+              {
+                  columns.Bound(p => p.ClaimType).Width(200);
+                  columns.Bound(p => p.ClaimValues);
+              }))
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+

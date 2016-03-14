@@ -138,7 +138,6 @@ namespace IdentityManagerWebApp.Controllers
             get { return "##"; }
         }
 
-
         public async Task<ActionResult> Claims_Read([DataSourceRequest] DataSourceRequest request, string id)
         {
 
@@ -225,6 +224,24 @@ namespace IdentityManagerWebApp.Controllers
         public ActionResult Create()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Details(string id)
+        {
+            UserDetailsDto user = await UserManager.GetDetailsByIdAsync(id);
+            DetailsViewModel vm = Mapper.Map<DetailsViewModel>(user);
+
+            vm.ClaimsList = Claims.GetClaimss()
+                .Select(
+                    a =>
+                        new ClaimListViewModel()
+                        {
+                            ClaimType = a,
+                            ClaimValues = string.Join(ConcatClaim, user.Claims.Where(b => b.Type == a).Select(c => c.Value))
+                        }).ToList();
+
+            return View(vm);
         }
 
         //
