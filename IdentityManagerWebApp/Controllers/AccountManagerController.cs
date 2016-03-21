@@ -244,35 +244,37 @@ namespace IdentityManagerWebApp.Controllers
             return View(vm);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> Edit(string id, ManageMessageId? message)
+        {
+            ViewBag.StatusMessage =
+               message == ManageMessageId.ActualizacionExitosa ? "Actualización Exitosa"
+               : message == ManageMessageId.Error ? "Upss, Houston tenemos un problema :("
+               : "";
+            
+            UserDetailsDto user = await UserManager.GetDetailsByIdAsync(id);
+            EditViewModel vm = Mapper.Map<EditViewModel>(user);
+
+            return View(vm);
+        }
+
         //
         // POST: /AccountManager/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CreateViewModel model)
+        public async Task<ActionResult> Edit(EditViewModel model)
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+                ApplicationUser user = await UserManager.FindByIdAsync(model.Id);
+             
+                user.Email = model.Email;
+                user.UserName = model.UserName;
 
-                string password = GenerateRandomPassword();
-                IdentityResult result = await UserManager.CreateAsync(user, password);
+                IdentityResult result = await UserManager.UpdateAsync(user);
                 if (result.Succeeded)
-                {
-                    //if (!string.IsNullOrWhiteSpace(user.Email))
-                    //{
-                    //    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    //    // Send an email with this link
-                    //    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //    string callbackUrl = Url.Action("ConfirmEmail", "Account", new { area = "", userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
-                    //}
-
-                    TempData["CreatedUserName"] = user.UserName;
-                    TempData["Password"] = password;
-
-                    return RedirectToAction("CreateSuccess");
-                }
+                    return RedirectToAction("Edit", new { model.Id, message = ManageMessageId.ActualizacionExitosa });
+                
                 AddErrors(result);
             }
 
