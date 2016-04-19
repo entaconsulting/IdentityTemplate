@@ -2,7 +2,7 @@
 Proyecto Web Template que utiliza como base el framework Identity 2.0 de MVC para autorizacion/autenticación de usuarios
 de una aplicación. Este proyecto se basa en un modelo de Usuarios/Roles/Claims tal como se define en ASP.NET Identity, este modelo puede extenderse/redefinirse dependiendo requerimientos a cumplir.
 
-En este proyecto se encuentran tanto el modelo, componentes y vistas que implementan los CRUD's básicos de las entidades del dominio.
+En este proyecto se encuentran tanto el modelo, componentes y vistas que implementan los CRUD's de las entidades del dominio.
 
 
 Componente ApplicationUserManager
