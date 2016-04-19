@@ -282,6 +282,40 @@ namespace IdentityManagerWebApp.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(CreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+
+                string password = GenerateRandomPassword();
+                IdentityResult result = await UserManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    //if (!string.IsNullOrWhiteSpace(user.Email))
+                    //{
+                    //    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    //    // Send an email with this link
+                    //    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //    string callbackUrl = Url.Action("ConfirmEmail", "Account", new { area = "", userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    //    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                    //    //    "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
+                    //}
+
+                    TempData["CreatedUserName"] = user.UserName;
+                    TempData["Password"] = password;
+
+                    return RedirectToAction("CreateSuccess");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
         public ActionResult CreateSuccess()
         {
             return View(new CreateSuccessViewModel()
